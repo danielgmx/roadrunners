@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOS CROOKS — Schedule 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f4; padding: 16px; max-width: 480px; margin: 0 auto; }
+  .header { background: #1a3a6b; color: #fff; padding: 16px; border-radius: 14px; margin-bottom: 16px; }
+  .header h1 { font-size: 20px; font-weight: 600; }
+  .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #888; text-transform: uppercase; margin-bottom: 8px; }
+  .next-card { background: #fff; border: 2px solid #1a3a6b; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; margin-bottom: 8px; }
+  .badge-tonight { background: #d32f2f; color: #fff; }
+  .badge-next    { background: #1a3a6b; color: #fff; }
+  .matchup { font-size: 18px; font-weight: 600; color: #111; }
+  .matchup .vs { color: #888; font-weight: 400; font-size: 15px; }
+  .home-away { font-size: 12px; color: #999; margin-top: 2px; }
+  .meta { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+  .meta-item { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #555; }
+  .meta-item i { font-size: 16px; color: #1a3a6b; }
+  .future-row { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 13px 14px; margin-bottom: 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .future-row:active { background: #f0f4fa; }
+  .future-row.past { opacity: 0.45; }
+  .date-line { display: flex; justify-content: space-between; align-items: center; }
+  .date-str { font-size: 13px; font-weight: 600; color: #111; }
+  .opp-str { font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
+  .chevron { font-size: 17px; color: #aaa; transition: transform 0.2s; display: inline-block; }
+  .chevron.open { transform: rotate(180deg); }
+  .future-details { display: none; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 10px; flex-direction: column; gap: 6px; }
+  .future-details.open { display: flex; }
+  .no-games { text-align: center; padding: 24px 0; color: #aaa; font-size: 14px; }
+  .footer { text-align: center; font-size: 11px; color: #bbb; margin-top: 20px; padding-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><i class="ti ti-ball-basketball" style="font-size:20px;vertical-align:-3px;margin-right:8px;"></i>LOS CROOKS</h1>
+  <p>HAY6-ABL14 · Adult Summer League Division C 2026<br>City of Laredo — Parks &amp; Recreation</p>
+</div>
+
+<div id="next-section"></div>
+<div class="section-label">Full schedule</div>
+<div id="games"></div>
+<div class="footer">LOS CROOKS · Summer 2026</div>
+
+<script>
+const games = [
+  { iso:"2026-06-23", dateLabel:"Tue, Jun 23", time:"8:00 PM",  h:20, m:0,  opp:"NOTORIOUS",      home:false, loc:"Gymnasium @ Cigarroa Recreation Center" },
+  { iso:"2026-07-07", dateLabel:"Tue, Jul 7",  time:"9:00 PM",  h:21, m:0,  opp:"REAL ONES",      home:false, loc:"Gymnasium @ Margarito Benavides Recreation Center" },
+  { iso:"2026-07-18", dateLabel:"Sat, Jul 18", time:"10:00 AM", h:10, m:0,  opp:"REAPERS",        home:true,  loc:"Gym @ NE Hillside Recreation Center" },
+  { iso:"2026-07-21", dateLabel:"Tue, Jul 21", time:"9:00 PM",  h:21, m:0,  opp:"REBELS",         home:false, loc:"Gymnasium @ Cigarroa Recreation Center" },
+  { iso:"2026-07-25", dateLabel:"Sat, Jul 25", time:"10:00 AM", h:10, m:0,  opp:"RECRUITS",       home:true,  loc:"Gym @ NE Hillside Recreation Center" },
+  { iso:"2026-08-05", dateLabel:"Wed, Aug 5",  time:"7:00 PM",  h:19, m:0,  opp:"SHAMELESS 3's",  home:false, loc:"Gymnasium @ Barbara Fasken Community Center" },
+  { iso:"2026-08-06", dateLabel:"Thu, Aug 6",  time:"9:00 PM",  h:21, m:0,  opp:"SHOWTIME",       home:true,  loc:"Gymnasium @ Cigarroa Recreation Center" },
+  { iso:"2026-08-19", dateLabel:"Wed, Aug 19", time:"8:00 PM",  h:20, m:0,  opp:"SNIPE SQUAD",    home:false, loc:"Gymnasium @ Barbara Fasken Community Center" },
+  { iso:"2026-08-20", dateLabel:"Thu, Aug 20", time:"8:00 PM",  h:20, m:0,  opp:"NO HOPZ",        home:true,  loc:"Gymnasium @ Margarito Benavides Recreation Center" },
+  { iso:"2026-08-24", dateLabel:"Mon, Aug 24", time:"7:00 PM",  h:19, m:0,  opp:"PANDA",          home:true,  loc:"Gymnasium @ Barbara Fasken Community Center" },
+];
+
+const now = new Date();
+const todayStr = now.toISOString().slice(0,10); // "2026-06-23"
+
+// Find next game: game day hasn't passed, OR it's today and game hasn't started yet
+let nextIdx = -1;
+for (let i = 0; i < games.length; i++) {
+  const g = games[i];
+  if (g.iso > todayStr) { nextIdx = i; break; }
+  if (g.iso === todayStr) {
+    const gameTime = new Date(now);
+    gameTime.setHours(g.h, g.m, 0, 0);
+    if (now < gameTime) { nextIdx = i; break; }
+  }
+}
+
+// --- Next/Tonight card ---
+const nextSection = document.getElementById('next-section');
+if (nextIdx === -1) {
+  nextSection.innerHTML = `<div class="no-games" style="margin-bottom:16px;">🏆 Season complete — great run!</div>`;
+} else {
+  const g = games[nextIdx];
+  const isToday = g.iso === todayStr;
+  const badgeClass = isToday ? 'badge-tonight' : 'badge-next';
+  const badgeText = isToday ? '🔴 Tonight' : 'Next game';
+  const sectionTitle = isToday ? "Tonight" : "Next game";
+  nextSection.innerHTML = `
+    <div class="section-label">${sectionTitle}</div>
+    <div class="next-card">
+      <span class="badge ${badgeClass}">${badgeText}</span>
+      <div class="matchup"><span class="vs">${g.home ? 'vs' : '@'}</span> ${g.opp}</div>
+      <div class="home-away">${g.home ? 'Home game' : 'Away game'}</div>
+      <div class="meta">
+        <span class="meta-item"><i class="ti ti-calendar"></i>${g.dateLabel}</span>
+        <span class="meta-item"><i class="ti ti-clock"></i>${g.time}</span>
+        <span class="meta-item"><i class="ti ti-map-pin"></i>${g.loc}</span>
+      </div>
+    </div>`;
+}
+
+// --- Full schedule list ---
+const container = document.getElementById('games');
+games.forEach((g, i) => {
+  const isPast = g.iso < todayStr || (g.iso === todayStr && (() => {
+    const gt = new Date(now); gt.setHours(g.h, g.m, 0, 0); return now >= gt;
+  })());
+  const isNext = i === nextIdx;
+
+  const row = document.createElement('div');
+  row.className = 'future-row' + (isPast ? ' past' : '');
+  row.innerHTML = `
+    <div class="date-line">
+      <span class="date-str">${g.dateLabel}${isNext ? ' <span style="font-size:10px;background:#1a3a6b;color:#fff;padding:2px 7px;border-radius:10px;vertical-align:middle;margin-left:4px;">NEXT</span>' : ''}</span>
+      <span class="opp-str">${g.home ? 'vs' : '@'} ${g.opp} <i class="ti ti-chevron-down chevron" id="chev${i}"></i></span>
+    </div>
+    <div class="future-details" id="det${i}">
+      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-clock" style="font-size:15px;color:#1a3a6b;"></i>${g.time}</span>
+      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-map-pin" style="font-size:15px;color:#1a3a6b;"></i>${g.loc}</span>
+      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-shirt" style="font-size:15px;color:#1a3a6b;"></i>${g.home ? 'Home game' : 'Away game'}</span>
+    </div>`;
+  row.addEventListener('click', () => {
+    document.getElementById('det'+i).classList.toggle('open');
+    document.getElementById('chev'+i).classList.toggle('open');
+  });
+  container.appendChild(row);
+});
+</script>
+</body>
+</html>
