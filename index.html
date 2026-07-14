@@ -63,30 +63,49 @@ const games = [
 ];
 
 const now = new Date();
-const todayStr = now.toISOString().slice(0,10); // "2026-06-23"
+const todayStr = now.toISOString().slice(0,10);
 
-// Find next game: game day hasn't passed, OR it's today and game hasn't started yet
-let nextIdx = -1;
-for (let i = 0; i < games.length; i++) {
-  const g = games[i];
-  if (g.iso > todayStr) { nextIdx = i; break; }
-  if (g.iso === todayStr) {
-    const gameTime = new Date(now);
-    gameTime.setHours(g.h, g.m, 0, 0);
-    if (now < gameTime) { nextIdx = i; break; }
-  }
+// Un juego se considera terminado 1 hora después de su hora de inicio
+function gameEndTime(g) {
+  const d = new Date(g.iso + 'T00:00:00');
+  d.setHours(g.h + 1, g.m, 0, 0); // +1 hora
+  return d;
 }
 
-// --- Next/Tonight card ---
+function gameStartTime(g) {
+  const d = new Date(g.iso + 'T00:00:00');
+  d.setHours(g.h, g.m, 0, 0);
+  return d;
+}
+
+// ¿Ya terminó el juego? (pasó 1 hora desde que empezó)
+function isPastGame(g) {
+  return now >= gameEndTime(g);
+}
+
+// ¿Está en curso ahora mismo? (empezó pero no ha pasado 1 hora)
+function isLiveGame(g) {
+  return now >= gameStartTime(g) && now < gameEndTime(g);
+}
+
+// Encuentra el siguiente juego: el primero que no haya terminado
+let nextIdx = -1;
+for (let i = 0; i < games.length; i++) {
+  if (!isPastGame(games[i])) { nextIdx = i; break; }
+}
+
+// --- Tarjeta principal ---
 const nextSection = document.getElementById('next-section');
 if (nextIdx === -1) {
   nextSection.innerHTML = `<div class="no-games" style="margin-bottom:16px;">🏆 Season complete — great run!</div>`;
 } else {
   const g = games[nextIdx];
   const isToday = g.iso === todayStr;
-  const badgeClass = isToday ? 'badge-tonight' : 'badge-next';
-  const badgeText = isToday ? '🔴 Tonight' : 'Next game';
-  const sectionTitle = isToday ? "Tonight" : "Next game";
+  const live = isLiveGame(g);
+  const badgeClass = (isToday || live) ? 'badge-tonight' : 'badge-next';
+  const badgeText = live ? '🔴 Game in progress' : isToday ? '🔴 Tonight' : 'Next game';
+  const sectionTitle = live ? 'In progress' : isToday ? 'Tonight' : 'Next game';
+
   nextSection.innerHTML = `
     <div class="section-label">${sectionTitle}</div>
     <div class="next-card">
@@ -101,16 +120,14 @@ if (nextIdx === -1) {
     </div>`;
 }
 
-// --- Full schedule list ---
+// --- Lista completa ---
 const container = document.getElementById('games');
 games.forEach((g, i) => {
-  const isPast = g.iso < todayStr || (g.iso === todayStr && (() => {
-    const gt = new Date(now); gt.setHours(g.h, g.m, 0, 0); return now >= gt;
-  })());
+  const past = isPastGame(g);
   const isNext = i === nextIdx;
 
   const row = document.createElement('div');
-  row.className = 'future-row' + (isPast ? ' past' : '');
+  row.className = 'future-row' + (past ? ' past' : '');
   row.innerHTML = `
     <div class="date-line">
       <span class="date-str">${g.dateLabel}${isNext ? ' <span style="font-size:10px;background:#1a3a6b;color:#fff;padding:2px 7px;border-radius:10px;vertical-align:middle;margin-left:4px;">NEXT</span>' : ''}</span>
