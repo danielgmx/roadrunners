@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LOS CROOKS — Schedule 2026</title>
+<title>ROADRUNNERS — Schedule 2026</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,7 +18,6 @@
   .badge-next    { background: #1a3a6b; color: #fff; }
   .matchup { font-size: 18px; font-weight: 600; color: #111; }
   .matchup .vs { color: #888; font-weight: 400; font-size: 15px; }
-  .home-away { font-size: 12px; color: #999; margin-top: 2px; }
   .meta { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
   .meta-item { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #555; }
   .meta-item i { font-size: 16px; color: #1a3a6b; }
@@ -39,27 +38,27 @@
 <body>
 
 <div class="header">
-  <h1><i class="ti ti-ball-basketball" style="font-size:20px;vertical-align:-3px;margin-right:8px;"></i>LOS CROOKS</h1>
-  <p>HAY6-ABL14 · Adult Summer League Division C 2026<br>City of Laredo — Parks &amp; Recreation</p>
+  <h1><i class="ti ti-ball-basketball" style="font-size:20px;vertical-align:-3px;margin-right:8px;"></i>ROADRUNNERS</h1>
+  <p>Border City 35+ Legends League<br>Border City Sportsplex</p>
 </div>
 
 <div id="next-section"></div>
 <div class="section-label">Full schedule</div>
 <div id="games"></div>
-<div class="footer">LOS CROOKS · Summer 2026</div>
+<div class="footer">ROADRUNNERS · Fall 2026</div>
 
 <script>
 const games = [
-  { iso:"2026-06-23", dateLabel:"Tue, Jun 23", time:"8:00 PM",  h:20, m:0,  opp:"NOTORIOUS",      home:false, loc:"Gymnasium @ Cigarroa Recreation Center" },
-  { iso:"2026-07-07", dateLabel:"Tue, Jul 7",  time:"9:00 PM",  h:21, m:0,  opp:"REAL ONES",      home:false, loc:"Gymnasium @ Margarito Benavides Recreation Center" },
-  { iso:"2026-07-18", dateLabel:"Sat, Jul 18", time:"10:00 AM", h:10, m:0,  opp:"REAPERS",        home:true,  loc:"Gym @ NE Hillside Recreation Center" },
-  { iso:"2026-07-21", dateLabel:"Tue, Jul 21", time:"9:00 PM",  h:21, m:0,  opp:"REBELS",         home:false, loc:"Gymnasium @ Cigarroa Recreation Center" },
-  { iso:"2026-07-25", dateLabel:"Sat, Jul 25", time:"10:00 AM", h:10, m:0,  opp:"RECRUITS",       home:true,  loc:"Gym @ NE Hillside Recreation Center" },
-  { iso:"2026-08-05", dateLabel:"Wed, Aug 5",  time:"7:00 PM",  h:19, m:0,  opp:"SHAMELESS 3's",  home:false, loc:"Gymnasium @ Barbara Fasken Community Center" },
-  { iso:"2026-08-06", dateLabel:"Thu, Aug 6",  time:"9:00 PM",  h:21, m:0,  opp:"SHOWTIME",       home:true,  loc:"Gymnasium @ Cigarroa Recreation Center" },
-  { iso:"2026-08-19", dateLabel:"Wed, Aug 19", time:"8:00 PM",  h:20, m:0,  opp:"SNIPE SQUAD",    home:false, loc:"Gymnasium @ Barbara Fasken Community Center" },
-  { iso:"2026-08-20", dateLabel:"Thu, Aug 20", time:"8:00 PM",  h:20, m:0,  opp:"NO HOPZ",        home:true,  loc:"Gymnasium @ Margarito Benavides Recreation Center" },
-  { iso:"2026-08-24", dateLabel:"Mon, Aug 24", time:"7:00 PM",  h:19, m:0,  opp:"PANDA",          home:true,  loc:"Gymnasium @ Barbara Fasken Community Center" },
+  { iso:"2026-09-09", dateLabel:"Wed, Sep 9",  time:"8:15 PM", h:20, m:15, opp:"HOWLAND",            court:"Court 3", gameNum:2  },
+  { iso:"2026-09-16", dateLabel:"Wed, Sep 16", time:"9:15 PM", h:21, m:15, opp:"RIP CITY",           court:"Court 1", gameNum:16 },
+  { iso:"2026-09-23", dateLabel:"Wed, Sep 23", time:"8:15 PM", h:20, m:15, opp:"FLORES BASKETBALL",  court:"Court 2", gameNum:26 },
+  { iso:"2026-09-28", dateLabel:"Mon, Sep 28", time:"8:15 PM", h:20, m:15, opp:"GOPHERS",            court:"Court 2", gameNum:33 },
+  { iso:"2026-10-05", dateLabel:"Mon, Oct 5",  time:"9:15 PM", h:21, m:15, opp:"PITBULLS",           court:"Court 1", gameNum:46 },
+  { iso:"2026-10-07", dateLabel:"Wed, Oct 7",  time:"9:15 PM", h:21, m:15, opp:"HOODFELLAS",         court:"Court 3", gameNum:54 },
+  { iso:"2026-10-14", dateLabel:"Wed, Oct 14", time:"8:15 PM", h:20, m:15, opp:"OLD TYMERS",         court:"Court 1", gameNum:61 },
+  { iso:"2026-10-19", dateLabel:"Mon, Oct 19", time:"9:15 PM", h:21, m:15, opp:"THE U",              court:"Court 2", gameNum:71 },
+  { iso:"2026-10-26", dateLabel:"Mon, Oct 26", time:"8:15 PM", h:20, m:15, opp:"FREEDOM BROS",       court:"Court 1", gameNum:79 },
+  { iso:"2026-10-28", dateLabel:"Wed, Oct 28", time:"8:15 PM", h:20, m:15, opp:"MID RANGE BALLERS",  court:"Court 2", gameNum:84 },
 ];
 
 const now = new Date();
@@ -110,12 +109,11 @@ if (nextIdx === -1) {
     <div class="section-label">${sectionTitle}</div>
     <div class="next-card">
       <span class="badge ${badgeClass}">${badgeText}</span>
-      <div class="matchup"><span class="vs">${g.home ? 'vs' : '@'}</span> ${g.opp}</div>
-      <div class="home-away">${g.home ? 'Home game' : 'Away game'}</div>
+      <div class="matchup"><span class="vs">vs</span> ${g.opp}</div>
       <div class="meta">
         <span class="meta-item"><i class="ti ti-calendar"></i>${g.dateLabel}</span>
         <span class="meta-item"><i class="ti ti-clock"></i>${g.time}</span>
-        <span class="meta-item"><i class="ti ti-map-pin"></i>${g.loc}</span>
+        <span class="meta-item"><i class="ti ti-map-pin"></i>Border City Sportsplex — ${g.court}</span>
       </div>
     </div>`;
 }
@@ -131,12 +129,12 @@ games.forEach((g, i) => {
   row.innerHTML = `
     <div class="date-line">
       <span class="date-str">${g.dateLabel}${isNext ? ' <span style="font-size:10px;background:#1a3a6b;color:#fff;padding:2px 7px;border-radius:10px;vertical-align:middle;margin-left:4px;">NEXT</span>' : ''}</span>
-      <span class="opp-str">${g.home ? 'vs' : '@'} ${g.opp} <i class="ti ti-chevron-down chevron" id="chev${i}"></i></span>
+      <span class="opp-str">vs ${g.opp} <i class="ti ti-chevron-down chevron" id="chev${i}"></i></span>
     </div>
     <div class="future-details" id="det${i}">
       <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-clock" style="font-size:15px;color:#1a3a6b;"></i>${g.time}</span>
-      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-map-pin" style="font-size:15px;color:#1a3a6b;"></i>${g.loc}</span>
-      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-shirt" style="font-size:15px;color:#1a3a6b;"></i>${g.home ? 'Home game' : 'Away game'}</span>
+      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-map-pin" style="font-size:15px;color:#1a3a6b;"></i>Border City Sportsplex — ${g.court}</span>
+      <span class="meta-item" style="display:flex;align-items:center;gap:6px;font-size:13px;color:#555;"><i class="ti ti-hash" style="font-size:15px;color:#1a3a6b;"></i>Game ${g.gameNum}</span>
     </div>`;
   row.addEventListener('click', () => {
     document.getElementById('det'+i).classList.toggle('open');
